@@ -4,6 +4,7 @@ namespace NotificationService.Shared.Rabbit.Contracts
 {
 	public class EmailMessageRequest
 	{
+		public required Guid Id { get; set; }
 		public required Guid PublisherId { get; set; }
 
 		[EmailAddress]

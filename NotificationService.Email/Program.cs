@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using NotificationService.EmailService.Database;
 using NotificationService.EmailService.Entities;
 using NotificationService.EmailService.Options;
 using NotificationService.EmailService.Services;
@@ -19,6 +21,10 @@ namespace NotificationService.EmailService
                 .AddLogging()
                 .AddTransient<ISender<Email>, EmailSender>()
                 .AddSingleton<RabbitMQConsumer>()
+                .AddDbContext<EmailDbContext>(options =>
+                {
+                    options.UseNpgsql(configuration.GetConnectionString(nameof(EmailDbContext)));
+                })
                 .BuildServiceProvider();
 
             var rabbitHost = services.GetRequiredService<RabbitMQConsumer>();
