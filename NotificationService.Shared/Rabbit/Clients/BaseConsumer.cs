@@ -1,8 +1,10 @@
-﻿using System.Text.Json;
+﻿using System.Text;
+using System.Text.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using NotificationService.Shared.Rabbit.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
@@ -94,7 +96,8 @@ namespace NotificationService.Shared.Rabbit.Clients
 
 		private Task<bool> ProcessMessageInternal(byte[] bytes)
 		{
-			var body = JsonSerializer.Deserialize<T>(bytes);
+			var bodyStr = Encoding.UTF8.GetString(bytes);
+			var body = JsonSerializer.Deserialize<T>(bodyStr);
 			if (body is null)
 			{
 				return Task.FromResult(false);

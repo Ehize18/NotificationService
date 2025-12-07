@@ -1,6 +1,7 @@
 ﻿using System.Threading.Channels;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using NotificationService.Shared.Rabbit.Options;
 using RabbitMQ.Client;
 
 namespace NotificationService.Shared.Rabbit.Clients

@@ -1,4 +1,4 @@
-﻿namespace NotificationService.Shared.Rabbit
+﻿namespace NotificationService.Shared.Rabbit.Options
 {
 	public class RabbitMQOptions
 	{
