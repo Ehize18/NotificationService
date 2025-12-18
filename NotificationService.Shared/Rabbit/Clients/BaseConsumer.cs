@@ -94,18 +94,18 @@ namespace NotificationService.Shared.Rabbit.Clients
 			await Channel.BasicConsumeAsync(queueName, false, consumer, cancellationToken);
 		}
 
-		private Task<bool> ProcessMessageInternal(byte[] bytes)
+		private async Task<bool> ProcessMessageInternal(byte[] bytes)
 		{
 			var bodyStr = Encoding.UTF8.GetString(bytes);
 			var body = JsonSerializer.Deserialize<T>(bodyStr);
 			if (body is null)
 			{
-				return Task.FromResult(false);
+				return false;
 			}
 
 			using var scope = _serviceProvider.CreateScope();
 
-			return ProcessMessage(body, scope);
+			return await ProcessMessage(body, scope);
 		}
 
 		protected abstract Task<bool> ProcessMessage(T body, IServiceScope scope);

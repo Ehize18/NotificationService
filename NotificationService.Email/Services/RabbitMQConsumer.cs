@@ -12,16 +12,16 @@ using NotificationService.Shared.Rabbit.Options;
 
 namespace NotificationService.EmailService.Services
 {
-	public class RabbitMQConsumer : BaseConsumer<EmailMessageRequest>
+	public class RabbitMQConsumer : BaseConsumer<MessageRequest>
 	{
 		public RabbitMQConsumer(IOptions<ConsumerOptions> consumerOptions,
-			ILogger<BaseConsumer<EmailMessageRequest>> logger,
+			ILogger<BaseConsumer<MessageRequest>> logger,
 			IServiceProvider serviceProvider)
 			: base(consumerOptions, logger, serviceProvider)
 		{
 		}
 
-		protected override async Task<bool> ProcessMessage(EmailMessageRequest body, IServiceScope scope)
+		protected override async Task<bool> ProcessMessage(MessageRequest body, IServiceScope scope)
 		{
 			var repository = scope.ServiceProvider.GetRequiredService<EmailRepository>();
 			var emailDTO = await repository.GetByIdAsync(body.Id);
@@ -30,7 +30,7 @@ namespace NotificationService.EmailService.Services
 				emailDTO = new EmailDTO
 				{
 					Id = body.Id,
-					Title = body.Title,
+					Title = body.Metadata["Title"].ToString(),
 					Content = body.Content,
 					Recipient = body.Recipient,
 					RetryCount = 0,
@@ -57,7 +57,7 @@ namespace NotificationService.EmailService.Services
 			var sendService = scope.ServiceProvider.GetRequiredService<ISender<Email>>();
 			var email = new Email
 			{
-				Title = body.Title,
+				Title = body.Metadata["Title"].ToString(),
 				Content = body.Content,
 				Recipient = body.Recipient
 			};

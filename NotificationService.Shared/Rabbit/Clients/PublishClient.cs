@@ -13,9 +13,19 @@ namespace NotificationService.Shared.Rabbit.Clients
 		{
 		}
 
-		public async Task Initialize(string exchange, string type = ExchangeType.Direct)
+		public async Task ExchangeDeclareAsync(string exchange, string type = ExchangeType.Direct)
 		{
 			await Channel.ExchangeDeclareAsync(exchange, type);
+		}
+
+		public async Task QueueDeclareAsync(string queue)
+		{
+			await Channel.QueueDeclareAsync(queue, false, false, false);
+		}
+
+		public async Task QueueBindAsync(string queue, string exchange, string routingKey)
+		{
+			await Channel.QueueBindAsync(queue, exchange, routingKey);
 		}
 
 		public async Task Publish<TMessage>(TMessage message, string exchange, string routingKey) where TMessage : class
